@@ -1,7 +1,7 @@
 # Cancelamentos e devoluções em e-commerce: análise de dados e modelo preditivo
 
 **Projeto de parceria EBAC × Semantix: Analista de Dados**
-
+Autora: Julia Reis Silva
 
 ## 1. O problema
 
@@ -21,7 +21,7 @@ Em um e-commerce, itens cancelados ou devolvidos significam receita perdida, cus
 | Acesso | Consulta SQL no BigQuery; cópia das tabelas para o projeto próprio (`ecommerce_analise`) |
 | Volume | 181.087 itens após o tratamento, 23 colunas, de 2019 a 2026, 16 países |
 
-Todo o código SQL está em [`sql/consultas_ecommerce.sql`](sql/consultas_ecommerce.sql).
+Todo o código SQL está em [`consultas_ecommerce.sql`](consultas_ecommerce.sql).
 
 ### Tratamento dos dados
 
@@ -31,7 +31,7 @@ Todo o código SQL está em [`sql/consultas_ecommerce.sql`](sql/consultas_ecomme
 - **Nulos:** as datas de envio, entrega e devolução vazias são estruturais (refletem o status do item), e não erro de dado.
 - **Colunas derivadas:** `ano_mes`, `ano`, `margem`, `margem_pct`, `dias_ate_envio`, `dias_ate_entrega`, `foi_entregue`, `foi_devolvido` e `faixa_etaria`.
 
-A tabela final está em [`dados/base_tratada.csv`](dados/).
+A tabela final está em [`base_tratada_ecommerce.csv`](base_tratada_ecommerce.csv). O relatório de insights da análise exploratória está no PDF `Relatório de insights análise exploratória do e-commerce.pdf`, na raiz do repositório.
 
 ## 3. Análise exploratória
 
@@ -39,11 +39,11 @@ Visão geral do negócio (itens com venda válida, isto é, sem cancelados e dev
 
 - **Receita total de cerca de 8,12 milhões**, com crescimento contínuo de 2019 (68 mil) até 2026 (3,02 milhões).
 - **Preço:** média de 59,59, mediana de 39,99 e 8,5% de itens fora do padrão (outliers) com preços altos, o que puxa a média para cima da mediana.
-- **Categorias:** Outerwear & Coats e Jeans lideram a receita; as maiores margens estão em Blazers & Jackets (62,0%), Accessories (59,9%) e Suits (59,8%), e a menor em Tops & Tees (44,0%).
+- **Categorias:** Outerwear & Coats e Jeans lideram a receita; as maiores margens estão em Blazers & Jackets (62,0%), Accessories (59,9%) e Suits & Sport Coats (59,8%), e a menor em Tops & Tees (44,0%).
 - **Canais e países:** o canal Search responde por cerca de 70% das vendas; China, Estados Unidos e Brasil lideram a receita.
 - **Status:** Shipped 30,1%, Complete 25,1%, Processing 20,0%, Cancelled 14,7% e Returned 10,1%.
 
-A análise de risco por segmento (taxa de perda por canal, país, categoria, faixa etária, faixa de preço e ano) e a associação de cada variável com o alvo (V de Cramér) estão no notebook [`notebooks/modelagem_cancelamentos.ipynb`](notebooks/modelagem_cancelamentos.ipynb), com os gráficos em [`figuras/`](figuras/).
+A análise de risco por segmento (taxa de perda por canal, país, categoria, faixa etária, faixa de preço e ano) e a associação de cada variável com o alvo (V de Cramér) estão no notebook [`modelagem_cancelamentos.ipynb`](modelagem_cancelamentos.ipynb), e os gráficos estão salvos como imagens na raiz do repositório (`taxa_perda_*.png` e `cramers_v.png`).
 
 O dashboard interativo, com 3 indicadores e 5 gráficos (receita no tempo, categorias, mapa por país, canais e faixa etária) e filtros por ano, país e categoria, está no Looker Studio:
 
@@ -74,6 +74,10 @@ O dashboard interativo, com 3 indicadores e 5 gráficos (receita no tempo, categ
 | Regressão logística | 0,5060 | 0,503 | 0,4175 | 0,4563 | 0,5070 |
 | Random Forest | 0,5163 | 0,518 | 0,3701 | 0,4317 | **0,5166** |
 
+![Matriz de confusão e curvas ROC](avaliacao_modelo.png)
+
+![Importância das variáveis](importancia_variaveis.png)
+
 ## 5. Conclusões
 
 1. **O desempenho dos modelos é próximo do acaso.** O melhor modelo (Random Forest) tem AUC de 0,517, contra 0,500 do baseline, e acurácia de 51,6%, contra 50,3%. Na prática, as informações conhecidas na hora da compra **não conseguem prever** se um item será cancelado ou devolvido.
@@ -96,25 +100,22 @@ O dashboard interativo, com 3 indicadores e 5 gráficos (receita no tempo, categ
 
 ## 6. Estrutura do repositório
 
-```
-.
-├── README.md                          # esta documentação
-├── notebooks/
-│   └── modelagem_cancelamentos.ipynb  # análise exploratória e modelagem
-├── sql/
-│   └── consultas_ecommerce.sql        # coleta, diagnóstico e tratamento
-├── dados/
-│   └── base_tratada.csv               # tabela final tratada
-├── figuras/                           # gráficos gerados no notebook
-├── resultados_modelos.csv             # métricas dos modelos
-└── relatorio_insights.pdf             # relatório de insights
-```
+| Arquivo | Conteúdo |
+|---|---|
+| `README.md` | Esta documentação |
+| `modelagem_cancelamentos.ipynb` | Análise exploratória e modelagem (com resultados) |
+| `consultas_ecommerce.sql` | Coleta, diagnóstico e tratamento dos dados |
+| `base_tratada_ecommerce.csv` | Tabela final tratada |
+| `resultados_modelos.csv` | Métricas dos três modelos |
+| `Relatório de insights análise exploratória do e-commerce.pdf` | Relatório de insights |
+| `taxa_perda_*.png`, `cramers_v.png` | Gráficos da análise exploratória |
+| `avaliacao_modelo.png`, `importancia_variaveis.png` | Gráficos da avaliação do modelo |
 
 ## 7. Como reproduzir
 
-1. Execute as consultas de `sql/consultas_ecommerce.sql` no BigQuery (ou use direto o arquivo `dados/base_tratada.csv`).
-2. Abra `notebooks/modelagem_cancelamentos.ipynb` no Google Colab.
-3. Para ler do CSV, troque `FONTE = "bigquery"` por `FONTE = "csv"` na primeira célula e envie o `base_tratada.csv` ao Colab.
+1. Execute as consultas de `consultas_ecommerce.sql` no BigQuery (ou use direto o arquivo `base_tratada_ecommerce.csv`).
+2. Abra `modelagem_cancelamentos.ipynb` no Google Colab.
+3. Para ler do CSV, troque `FONTE = "bigquery"` por `FONTE = "csv"` na primeira célula, envie o `base_tratada_ecommerce.csv` ao Colab e ajuste o nome do arquivo na linha `pd.read_csv(...)`.
 4. Execute as células em ordem.
 
 **Ferramentas:** Google BigQuery (SQL), Python (pandas, scikit-learn, matplotlib, scipy), Google Colab e Looker Studio.
