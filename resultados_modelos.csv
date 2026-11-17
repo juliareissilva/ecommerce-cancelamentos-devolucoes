@@ -1,0 +1,4 @@
+modelo,acuracia,precisao,recall,F1,AUC-ROC
+Baseline (classe mais comum),0.5035,0.0,0.0,0.0,0.5
+Regressao logastica,0.506,0.503,0.4175,0.4563,0.507
+Random Forest,0.5163,0.518,0.3701,0.4317,0.5166
