@@ -1,7 +1,7 @@
 # Cancelamentos e devoluções em e-commerce: análise de dados e modelo preditivo
 
 **Projeto de parceria EBAC × Semantix: Analista de Dados**
-Autora: [SEU NOME COMPLETO]
+Julia Reis da Silva
 
 ## 1. O problema
 
@@ -47,7 +47,7 @@ A análise de risco por segmento (taxa de perda por canal, país, categoria, fai
 
 O dashboard interativo, com 3 indicadores e 5 gráficos (receita no tempo, categorias, mapa por país, canais e faixa etária) e filtros por ano, país e categoria, está no Looker Studio:
 
-**Dashboard:** [COLE AQUI O LINK DO DASHBOARD]
+**Dashboard:** [](https://datastudio.google.com/s/lMqn9A7qadw)
 
 ## 4. Modelagem
 
