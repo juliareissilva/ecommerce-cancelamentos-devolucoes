@@ -1,7 +1,7 @@
 # Cancelamentos e devoluções em e-commerce: análise de dados e modelo preditivo
 
 **Projeto de parceria EBAC × Semantix: Analista de Dados**
-Autora: Julia Reis da Silva
+
 
 ## 1. O problema
 
